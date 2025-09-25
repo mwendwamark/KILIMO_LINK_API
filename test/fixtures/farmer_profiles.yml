@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  avatar: MyString
+  bio: MyText
+  county: MyString
+  country: MyString
+  is_verified: false
+  created_at: 2025-09-25 18:32:47
+  updated_at: 2025-09-25 18:32:47
+
+two:
+  user: two
+  avatar: MyString
+  bio: MyText
+  county: MyString
+  country: MyString
+  is_verified: false
+  created_at: 2025-09-25 18:32:47
+  updated_at: 2025-09-25 18:32:47

@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  conversation: one
+  user: one
+  joined_at: 2025-09-25 19:09:50
+
+two:
+  conversation: two
+  user: two
+  joined_at: 2025-09-25 19:09:50
