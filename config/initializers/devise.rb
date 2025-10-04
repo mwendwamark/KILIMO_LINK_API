@@ -24,10 +24,10 @@ Devise.setup do |config|
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = 'kejaconnect@gmail.com'
+  config.mailer_sender = "kejaconnect@gmail.com"
 
   # Configure the class responsible to send e-mails.
-  # config.mailer = 'Devise::Mailer'
+  config.mailer = "Devise::Mailer"
 
   # Configure the parent class responsible to send e-mails.
   # config.parent_mailer = 'ActionMailer::Base'
@@ -36,7 +36,7 @@ Devise.setup do |config|
   # Load and configure the ORM. Supports :active_record (default) and
   # :mongoid (bson_ext recommended) by default. Other ORMs may be
   # available as additional gems.
-  require 'devise/orm/active_record'
+  require "devise/orm/active_record"
 
   # ==> Configuration for any authentication mechanism
   # Authentication with email or phone_number via a unified :login param
@@ -270,12 +270,12 @@ Devise.setup do |config|
   config.jwt do |jwt|
     jwt.secret = jwt_secret
     jwt.dispatch_requests = [
-      ['POST', %r{^/buyers/login$}],
-      ['POST', %r{^/farmers/login$}]
+      ["POST", %r{^/buyers/login$}],
+      ["POST", %r{^/farmers/login$}],
     ]
     jwt.revocation_requests = [
-      ['DELETE', %r{^/buyers/logout$}],
-      ['DELETE', %r{^/farmers/logout$}]
+      ["DELETE", %r{^/buyers/logout$}],
+      ["DELETE", %r{^/farmers/logout$}],
     ]
     jwt.expiration_time = 24.hours.to_i
     jwt.request_formats = { user: [:json] }
@@ -303,10 +303,14 @@ Devise.setup do |config|
   # Note: These might become the new default in future versions of Devise.
   config.responder.error_status = :unprocessable_entity
   config.responder.redirect_status = :see_other
-
   # ==> Configuration for :registerable
 
   # When set to false, does not sign a user in automatically after their password is
   # changed. Defaults to true, so a user is signed in automatically after changing a password.
   # config.sign_in_after_change_password = true
 end
+
+ActionMailer::Base.default_url_options = {
+  host: ENV["BACKEND_HOST"] || "localhost:3000",
+  protocol: ENV["BACKEND_PROTOCOL"] || "http",
+}
