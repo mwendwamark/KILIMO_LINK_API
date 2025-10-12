@@ -1,8 +1,7 @@
+# config/routes.rb
 Rails.application.routes.draw do
-  # Disable default Devise routes
   devise_for :users, skip: :all
 
-  # Custom auth endpoints
   devise_scope :user do
     # Buyers
     post "/buyers/signup", to: "buyers/registrations#create"
@@ -18,8 +17,13 @@ Rails.application.routes.draw do
     post "/farmers/password", to: "farmers/passwords#create"
     put "/farmers/password", to: "farmers/passwords#update"
 
-    # Email confirmation - THIS IS THE KEY LINE
+    # Email confirmation
     get "/auth/confirmation", to: "auth/confirmations#show", as: :user_confirmation
+    
+    # Farmers farms CRUD - Added show action
+    scope module: :farmers do
+      resources :farms, only: %i[index show create update destroy], path: "farmers/farms"
+    end
   end
 
   get "up" => "rails/health#show", as: :rails_health_check

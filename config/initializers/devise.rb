@@ -267,20 +267,35 @@ Devise.setup do |config|
   # JWT configuration for API auth
   # Secret is read from Rails credentials (fallback to secret_key_base)
   jwt_secret = Rails.application.credentials.dig(:jwt, :secret) || Rails.application.secret_key_base
+  # config.jwt do |jwt|
+  #   jwt.secret = jwt_secret
+  #   jwt.dispatch_requests = [
+  #     ["POST", %r{^/buyers/login$}],
+  #     ["POST", %r{^/farmers/login$}],
+  #   ]
+  #   jwt.revocation_requests = [
+  #     ["DELETE", %r{^/buyers/logout$}],
+  #     ["DELETE", %r{^/farmers/logout$}],
+  #   ]
+  #   jwt.expiration_time = 24.hours.to_i
+  #   jwt.request_formats = { user: [:json] }
+  # end
+
   config.jwt do |jwt|
     jwt.secret = jwt_secret
+
     jwt.dispatch_requests = [
       ["POST", %r{^/buyers/login$}],
       ["POST", %r{^/farmers/login$}],
     ]
+
     jwt.revocation_requests = [
       ["DELETE", %r{^/buyers/logout$}],
       ["DELETE", %r{^/farmers/logout$}],
     ]
-    jwt.expiration_time = 24.hours.to_i
-    jwt.request_formats = { user: [:json] }
-  end
 
+    jwt.expiration_time = 24.hours.to_i
+  end
   # ==> Mountable engine configurations
   # When using Devise inside an engine, let's call it `MyEngine`, and this engine
   # is mountable, there are some extra configurations to be taken into account.
