@@ -31,6 +31,8 @@ module Farmers
         email: user.email,
         roles: Array(user.roles),
         confirmed: user.confirmed?,
+        created_at: user.created_at,  # Add this line
+        updated_at: user.updated_at   # Add this line
       }
     end
   end
