@@ -19,10 +19,28 @@ Rails.application.routes.draw do
 
     # Email confirmation
     get "/auth/confirmation", to: "auth/confirmations#show", as: :user_confirmation
-    
-    # Farmers farms CRUD - Added show action
+
+    # Farmers resources
     scope module: :farmers do
+      # Farms CRUD
       resources :farms, only: %i[index show create update destroy], path: "farmers/farms"
+
+      # Farmer Profile
+      get "/farmers/profile", to: "profiles#show"
+      post "/farmers/profile", to: "profiles#create"
+      put "/farmers/profile", to: "profiles#update"
+      patch "/farmers/profile", to: "profiles#update"
+      delete "/farmers/profile", to: "profiles#destroy"
+    end
+
+    # Buyers resources
+    scope module: :buyers do
+      # Buyer Profile
+      get "/buyers/profile", to: "profiles#show"
+      post "/buyers/profile", to: "profiles#create"
+      put "/buyers/profile", to: "profiles#update"
+      patch "/buyers/profile", to: "profiles#update"
+      delete "/buyers/profile", to: "profiles#destroy"
     end
   end
 
