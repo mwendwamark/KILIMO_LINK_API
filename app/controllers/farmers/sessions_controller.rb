@@ -1,5 +1,7 @@
 module Farmers
   class SessionsController < Devise::SessionsController
+    include ActionController::MimeResponds
+
     respond_to :json
 
     # POST /farmers/login

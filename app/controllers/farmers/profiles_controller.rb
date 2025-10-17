@@ -2,7 +2,7 @@ module Farmers
   class ProfilesController < ApplicationController
     before_action :authenticate_user!
     before_action :ensure_farmer
-    before_action :set_profile, only: [:show, :update]
+    before_action :set_profile, only: [:show, :update, :destroy]
 
     # GET /farmers/profile
     def show
@@ -67,10 +67,15 @@ module Farmers
 
     def set_profile
       @profile = current_user.farmer_profile
-      unless @profile
-        # Auto-create profile if it doesn't exist
-        @profile = current_user.create_farmer_profile
-      end
+      return if @profile
+
+      # Auto-create profile if it doesn't exist
+      @profile = current_user.create_farmer_profile
+    rescue ActiveRecord::RecordInvalid => e
+      render json: {
+        success: false,
+        error: "Failed to create profile: #{e.message}",
+      }, status: :unprocessable_entity
     end
 
     def ensure_farmer
@@ -84,11 +89,10 @@ module Farmers
 
     def profile_params
       params.require(:farmer_profile).permit(
-        :avatar,
         :bio,
         :county,
         :country,
-        :is_verified
+        :profile_picture
       )
     end
 
@@ -96,7 +100,7 @@ module Farmers
       {
         id: profile.id,
         user_id: profile.user_id,
-        avatar: profile.avatar,
+        profile_picture_url: profile.profile_picture.attached? ? url_for(profile.profile_picture) : nil,
         bio: profile.bio,
         county: profile.county,
         country: profile.country,

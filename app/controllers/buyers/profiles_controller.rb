@@ -2,7 +2,7 @@ module Buyers
   class ProfilesController < ApplicationController
     before_action :authenticate_user!
     before_action :ensure_buyer
-    before_action :set_profile, only: [:show, :update]
+    before_action :set_profile, only: [:show, :update, :destroy]
 
     # GET /buyers/profile
     def show
@@ -67,10 +67,15 @@ module Buyers
 
     def set_profile
       @profile = current_user.buyer_profile
-      unless @profile
-        # Auto-create profile if it doesn't exist
-        @profile = current_user.create_buyer_profile
-      end
+      return if @profile
+
+      # Auto-create profile if it doesn't exist
+      @profile = current_user.create_buyer_profile
+    rescue ActiveRecord::RecordInvalid => e
+      render json: {
+        success: false,
+        error: "Failed to create profile: #{e.message}",
+      }, status: :unprocessable_entity
     end
 
     def ensure_buyer
@@ -84,10 +89,10 @@ module Buyers
 
     def profile_params
       params.require(:buyer_profile).permit(
-        :avatar,
         :location,
         :county,
-        :country
+        :country,
+        :profile_picture
       )
     end
 
@@ -95,7 +100,7 @@ module Buyers
       {
         id: profile.id,
         user_id: profile.user_id,
-        avatar: profile.avatar,
+        profile_picture_url: profile.profile_picture.attached? ? url_for(profile.profile_picture) : nil,
         location: profile.location,
         county: profile.county,
         country: profile.country,

@@ -1,5 +1,6 @@
 module Buyers
   class SessionsController < Devise::SessionsController
+    include ActionController::MimeResponds
     respond_to :json
 
     # POST /buyers/login
