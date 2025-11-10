@@ -52,3 +52,5 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
   gem "letter_opener"
 end
+
+gem "dockerfile-rails", ">= 1.7", group: :development
