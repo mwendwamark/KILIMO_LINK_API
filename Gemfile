@@ -40,6 +40,7 @@ gem "devise", "~> 4.9"
 gem "devise-jwt", "~> 0.11"
 gem "image_processing", "~> 1.2"
 gem "aws-sdk-s3", require: false
+gem "google-cloud-storage", require: false
 gem "active_model_serializers"
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

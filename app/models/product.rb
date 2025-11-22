@@ -3,6 +3,7 @@ class Product < ApplicationRecord
   # Relationships
   belongs_to :farm
   has_many :reviews, dependent: :destroy
+  has_many_attached :product_images
 
   # Valid categories and units (using constants instead of enums)
   CATEGORIES = %w[livestock crops fruits vegetables dairy poultry aquaculture].freeze
@@ -11,17 +12,20 @@ class Product < ApplicationRecord
   # Validations
   validates :product_name, presence: true
   validates :category, presence: true, inclusion: {
-               in: CATEGORIES,
-               message: "%{value} is not a valid category",
-             }
+                         in: CATEGORIES,
+                         message: "%{value} is not a valid category",
+                       }
   validates :unit, inclusion: {
-           in: UNITS,
-           message: "%{value} is not a valid unit",
-         }, allow_nil: true
+                     in: UNITS,
+                     message: "%{value} is not a valid unit",
+                   }, allow_nil: true
   validates :quantity, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :price_per_unit, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :age, presence: true, if: :animal_category?
   validates :harvest_date, presence: true, if: :crop_category?
+
+  # Validate image types
+  validate :acceptable_image_types
 
   # Helper methods for categories
   def livestock?
@@ -60,5 +64,15 @@ class Product < ApplicationRecord
 
   def crop_category?
     %w[crops fruits vegetables].include?(category)
+  end
+
+  def acceptable_image_types
+    return unless product_images.attached?
+
+    product_images.each do |image|
+      unless image.content_type.in?(%w[image/jpeg image/jpg image/png image/gif])
+        errors.add(:product_images, "must be a JPEG, JPG, PNG, or GIF")
+      end
+    end
   end
 end

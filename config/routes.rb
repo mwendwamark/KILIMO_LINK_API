@@ -22,8 +22,11 @@ Rails.application.routes.draw do
 
     # Farmers resources
     scope module: :farmers do
-      # Farms CRUD
-      resources :farms, only: %i[index show create update destroy], path: "farmers/farms"
+      # Farms CRUD with nested Products
+      resources :farms, only: %i[index show create update destroy], path: "farmers/farms" do
+        # Products nested under farms
+        resources :products, only: %i[index show create update destroy]
+      end
 
       # Farmer Profile
       get "/farmers/profile", to: "profiles#show"
@@ -42,6 +45,8 @@ Rails.application.routes.draw do
       patch "/buyers/profile", to: "profiles#update"
       delete "/buyers/profile", to: "profiles#destroy"
     end
+    # Public Products (for buyers)
+    resources :products, only: %i[index show]
   end
 
   get "up" => "rails/health#show", as: :rails_health_check
