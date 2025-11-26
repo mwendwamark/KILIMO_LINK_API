@@ -22,6 +22,9 @@ Rails.application.routes.draw do
 
     # Farmers resources
     scope module: :farmers do
+      # All farmer products (across all farms)
+      get "/farmers/products", to: "products#all_farmer_products"
+
       # Farms CRUD with nested Products
       resources :farms, only: %i[index show create update destroy], path: "farmers/farms" do
         # Products nested under farms

@@ -3,12 +3,24 @@ module Farmers
   class ProductsController < ApplicationController
     before_action :authenticate_user!
     before_action :ensure_farmer
-    before_action :set_farm
+    before_action :set_farm, except: [:all_farmer_products]
     before_action :set_product, only: [:show, :update, :destroy]
 
     # GET /farmers/farms/:farm_id/products
     def index
       @products = @farm.products.order(created_at: :desc)
+
+      render json: {
+        success: true,
+        products: @products.map { |product| product_json(product) },
+      }, status: :ok
+    end
+
+    # GET /farmers/products
+    # Get all products across all farms owned by the farmer
+    def all_farmer_products
+      farm_ids = current_user.farms.pluck(:id)
+      @products = Product.where(farm_id: farm_ids).order(created_at: :desc)
 
       render json: {
         success: true,
