@@ -1,5 +1,8 @@
 # app/models/product.rb
 class Product < ApplicationRecord
+  # Include searchable concern
+  include Searchable
+  
   # Relationships
   belongs_to :farm
   has_many :reviews, dependent: :destroy

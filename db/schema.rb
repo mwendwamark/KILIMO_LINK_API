@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_15_094231) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_01_075830) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pg_trgm"
   enable_extension "pgcrypto"
 
   create_table "active_storage_attachments", force: :cascade do |t|
@@ -107,6 +108,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_15_094231) do
     t.string "farm_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["county"], name: "index_farms_on_county"
     t.index ["user_id"], name: "index_farms_on_user_id"
   end
 
@@ -156,7 +158,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_15_094231) do
     t.date "harvest_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["category"], name: "index_products_on_category"
+    t.index ["created_at", "id"], name: "index_products_on_created_at_and_id", order: :desc
+    t.index ["description"], name: "index_products_on_description_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["farm_id"], name: "index_products_on_farm_id"
+    t.index ["price_per_unit"], name: "index_products_on_price_per_unit"
+    t.index ["product_name"], name: "index_products_on_product_name_trgm", opclass: :gin_trgm_ops, using: :gin
   end
 
   create_table "resources", force: :cascade do |t|

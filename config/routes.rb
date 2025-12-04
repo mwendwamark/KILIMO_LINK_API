@@ -49,6 +49,7 @@ Rails.application.routes.draw do
       delete "/buyers/profile", to: "profiles#destroy"
     end
     # Public Products (for buyers)
+    get "/products/filter_options", to: "products#filter_options"
     resources :products, only: %i[index show]
   end
 
