@@ -114,6 +114,7 @@ class ProductsController < ApplicationController
       updated_at: product.updated_at,
       farm: {
         id: product.farm.id,
+        user_id: product.farm.user_id,
         farm_name: product.farm.farm_name,
         county: product.farm.county,
       },

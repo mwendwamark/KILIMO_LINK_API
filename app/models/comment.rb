@@ -5,4 +5,7 @@ class Comment < ApplicationRecord
   has_many :replies, class_name: "Comment", foreign_key: "parent_id", dependent: :destroy
 
   validates :comment_body, presence: true
+
+  scope :top_level, -> { where(parent_id: nil) }
+  scope :recent, -> { order(created_at: :desc) }
 end

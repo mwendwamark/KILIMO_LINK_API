@@ -21,6 +21,10 @@ class User < ApplicationRecord
   has_many :messages, dependent: :destroy
   has_many :conversation_participants, dependent: :destroy
   has_many :conversations, through: :conversation_participants
+  has_many :active_follows, class_name: "Follow", foreign_key: :follower_id, dependent: :destroy
+  has_many :passive_follows, class_name: "Follow", foreign_key: :following_id, dependent: :destroy
+  has_many :following, through: :active_follows, source: :following
+  has_many :followers, through: :passive_follows, source: :follower
 
   # Validations
   validates :phone_number, format: { with: /\A\+254\d{9}\z/ }, allow_blank: true, uniqueness: { allow_nil: true }
@@ -40,6 +44,10 @@ class User < ApplicationRecord
 
   def farmer?
     Array(roles).include?("farmer")
+  end
+
+  def following?(other_user)
+    active_follows.exists?(following_id: other_user.id)
   end
 
   # JWT revocation check - compare JTI from token with JTI in database

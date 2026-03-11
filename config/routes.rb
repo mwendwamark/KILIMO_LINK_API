@@ -50,7 +50,33 @@ Rails.application.routes.draw do
     end
     # Public Products (for buyers)
     get "/products/filter_options", to: "products#filter_options"
-    resources :products, only: %i[index show]
+    resources :products, only: %i[index show] do
+      resources :reviews, only: %i[index create destroy]
+    end
+
+    namespace :community do
+      # Posts feed
+      resources :posts, only: [:index, :show, :create, :update, :destroy] do
+        resources :comments, only: [:index, :create, :destroy]
+        member do
+          post :like, to: "likes#toggle"
+        end
+      end
+
+      # User profiles & follows
+      scope "users/:user_id" do
+        post :follow, to: "follows#toggle"
+        get :followers, to: "follows#followers"
+        get :following, to: "follows#following"
+      end
+      get "users/:id", to: "profiles#show"
+
+      # Messaging
+      get    "conversations",                        to: "messages#conversations"
+      post   "conversations",                        to: "messages#create_conversation"
+      get    "conversations/:id/messages",           to: "messages#show"
+      post   "conversations/:id/messages",           to: "messages#send_message"
+    end
   end
 
   get "up" => "rails/health#show", as: :rails_health_check

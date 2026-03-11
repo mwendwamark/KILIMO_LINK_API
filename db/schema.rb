@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_01_075830) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_07_191940) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -110,6 +110,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_01_075830) do
     t.datetime "updated_at", null: false
     t.index ["county"], name: "index_farms_on_county"
     t.index ["user_id"], name: "index_farms_on_user_id"
+  end
+
+  create_table "follows", force: :cascade do |t|
+    t.bigint "follower_id", null: false
+    t.bigint "following_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["follower_id", "following_id"], name: "index_follows_on_follower_id_and_following_id", unique: true
+    t.index ["following_id"], name: "index_follows_on_following_id"
   end
 
   create_table "jwt_denylists", force: :cascade do |t|
@@ -222,6 +231,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_01_075830) do
   add_foreign_key "conversation_participants", "users"
   add_foreign_key "farmer_profiles", "users"
   add_foreign_key "farms", "users"
+  add_foreign_key "follows", "users", column: "follower_id"
+  add_foreign_key "follows", "users", column: "following_id"
   add_foreign_key "likes", "posts"
   add_foreign_key "likes", "users"
   add_foreign_key "messages", "conversations"
