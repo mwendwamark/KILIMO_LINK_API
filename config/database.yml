@@ -81,14 +81,18 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    url: <%= ENV["DATABASE_URL"] %>
+    database: kilimo_link_api_production
+    username: kilimo_link_api
+    password: <%= ENV["KILIMO_LINK_API_DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_production
+    database: kilimo_link_api_production_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
+    database: kilimo_link_api_production_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
+    database: kilimo_link_api_production_cable
     migrations_paths: db/cable_migrate
-
