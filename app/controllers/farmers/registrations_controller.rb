@@ -49,7 +49,7 @@ module Farmers
 
       if resource.save
         render json: {
-          message: "Signup successful. Please confirm your email to activate your account.",
+          message: "Signup successful. You can now log in.",
           user: user_json(resource)
         }, status: :created
       else
@@ -71,7 +71,6 @@ module Farmers
         phone_number: user.phone_number,
         email: user.email,
         roles: Array(user.roles),
-        confirmed: user.confirmed?,
         created_at: user.created_at,
         updated_at: user.updated_at,
       }

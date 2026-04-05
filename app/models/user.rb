@@ -10,6 +10,10 @@ class User < ApplicationRecord
          :jwt_authenticatable,
          jwt_revocation_strategy: self  # Use self, not JwtDenylist
 
+  def confirmation_required?
+    new_record? ? super : false
+  end
+
   # Relationships
   has_one :buyer_profile, dependent: :destroy
   has_one :farmer_profile, dependent: :destroy

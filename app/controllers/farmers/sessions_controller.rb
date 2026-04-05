@@ -17,10 +17,6 @@ module Farmers
         return render json: { error: "Role mismatch. Use the correct portal for your role." }, status: :forbidden
       end
 
-      unless user.confirmed?
-        return render json: { error: "Email not confirmed. Please check your inbox." }, status: :forbidden
-      end
-
       self.resource = warden.authenticate!(auth_options)
       sign_in(resource_name, resource)
 

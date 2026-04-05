@@ -1,0 +1,24 @@
+# Git
+.git
+
+# Temporary files
+tmp/
+log/
+storage/
+
+# OS files
+.DS_Store
+*.swp
+*.swo
+
+# IDE files
+.vscode/
+.idea/
+
+# Test files (not needed in production)
+test/
+spec/
+
+# Documentation
+README.md
+LICENSE
