@@ -1,8 +1,5 @@
 class ConfirmExistingUsers < ActiveRecord::Migration[8.0]
-  def up
+  def change
     User.where(confirmed_at: nil).update_all(confirmed_at: Time.current)
-  end
-
-  def down
   end
 end

@@ -8,11 +8,7 @@ class User < ApplicationRecord
          :validatable,
          :confirmable,
          :jwt_authenticatable,
-         jwt_revocation_strategy: self  # Use self, not JwtDenylist
-
-  def confirmation_required?
-    new_record? ? super : false
-  end
+         jwt_revocation_strategy: self
 
   # Relationships
   has_one :buyer_profile, dependent: :destroy
@@ -33,6 +29,10 @@ class User < ApplicationRecord
   # Validations
   validates :phone_number, format: { with: /\A\+254\d{9}\z/ }, allow_blank: true, uniqueness: { allow_nil: true }
   validate :single_valid_role
+
+  def confirmation_required?
+    new_record? ? super : false
+  end
 
   # Virtual login attribute
   attr_writer :login
