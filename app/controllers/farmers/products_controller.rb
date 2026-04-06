@@ -17,38 +17,38 @@ module Farmers
     end
 
     # GET /farmers/products
-  # Get all products across all farms owned by the farmer
-  # Supports search, filtering, sorting, and pagination
-  def all_farmer_products
-    # Validate and sanitize parameters
-    search_params = sanitize_search_params
-    
-    # Get farmer's farm IDs
-    farm_ids = current_user.farms.pluck(:id)
-    
-    # Apply search and filters to farmer's products
-    @products = Product.where(farm_id: farm_ids)
-                      .search_and_filter(search_params)
-    
-    # Paginate results
-    page = (params[:page] || 1).to_i
-    per_page = [(params[:per_page] || 20).to_i, 100].min
-    
-    @products = @products.page(page).per(per_page)
+    # Get all products across all farms owned by the farmer
+    # Supports search, filtering, sorting, and pagination
+    def all_farmer_products
+      # Validate and sanitize parameters
+      search_params = sanitize_search_params
 
-    render json: {
-      success: true,
-      products: @products.map { |product| product_json(product) },
-      meta: {
-        current_page: @products.current_page,
-        total_pages: @products.total_pages,
-        total_count: @products.total_count,
-        per_page: per_page,
-        has_next_page: @products.next_page.present?,
-        has_prev_page: @products.prev_page.present?
-      }
-    }, status: :ok
-  end
+      # Get farmer's farm IDs
+      farm_ids = current_user.farms.pluck(:id)
+
+      # Apply search and filters to farmer's products
+      @products = Product.where(farm_id: farm_ids)
+        .search_and_filter(search_params)
+
+      # Paginate results
+      page = (params[:page] || 1).to_i
+      per_page = [(params[:per_page] || 20).to_i, 100].min
+
+      @products = @products.page(page).per(per_page)
+
+      render json: {
+               success: true,
+               products: @products.map { |product| product_json(product) },
+               meta: {
+                 current_page: @products.current_page,
+                 total_pages: @products.total_pages,
+                 total_count: @products.total_count,
+                 per_page: per_page,
+                 has_next_page: @products.next_page.present?,
+                 has_prev_page: @products.prev_page.present?,
+               },
+             }, status: :ok
+    end
 
     # GET /farmers/farms/:farm_id/products/:id
     def show
@@ -59,62 +59,62 @@ module Farmers
     end
 
     # POST /farmers/farms/:farm_id/products
-  def create
-    @product = @farm.products.build(product_params)
+    def create
+      @product = @farm.products.build(product_params)
 
-    if @product.save
-      # Invalidate product caches
-      invalidate_product_caches
-      
-      render json: {
-        success: true,
-        message: "Product created successfully",
-        product: product_json(@product),
-      }, status: :created
-    else
-      render json: {
-        success: false,
-        errors: @product.errors.full_messages,
-      }, status: :unprocessable_entity
+      if @product.save
+        # Invalidate product caches
+        invalidate_product_caches
+
+        render json: {
+                 success: true,
+                 message: "Product created successfully",
+                 product: product_json(@product),
+               }, status: :created
+      else
+        render json: {
+                 success: false,
+                 errors: @product.errors.full_messages,
+               }, status: :unprocessable_entity
+      end
     end
-  end
 
     # PUT/PATCH /farmers/farms/:farm_id/products/:id
-  def update
-    if @product.update(product_params)
-      # Invalidate product caches
-      invalidate_product_caches
-      
-      render json: {
-        success: true,
-        message: "Product updated successfully",
-        product: product_json(@product),
-      }, status: :ok
-    else
-      render json: {
-        success: false,
-        errors: @product.errors.full_messages,
-      }, status: :unprocessable_entity
+    def update
+      if @product.update(product_params)
+        # Invalidate product caches
+        invalidate_product_caches
+
+        render json: {
+                 success: true,
+                 message: "Product updated successfully",
+                 product: product_json(@product),
+               }, status: :ok
+      else
+        render json: {
+                 success: false,
+                 errors: @product.errors.full_messages,
+               }, status: :unprocessable_entity
+      end
     end
-  end
 
     # DELETE /farmers/farms/:farm_id/products/:id
-  def destroy
-    if @product.destroy
-      # Invalidate product caches
-      invalidate_product_caches
-      
-      render json: {
-        success: true,
-        message: "Product deleted successfully",
-      }, status: :ok
-    else
-      render json: {
-        success: false,
-        error: "Product could not be deleted",
-      }, status: :unprocessable_entity
+    def destroy
+      if @product.destroy
+        # Invalidate product caches
+        invalidate_product_caches
+
+        render json: {
+                 success: true,
+                 message: "Product deleted successfully",
+               }, status: :ok
+      else
+        render json: {
+                 success: false,
+                 error: "Product could not be deleted",
+               }, status: :unprocessable_entity
+      end
     end
-  end
 
     private
 
@@ -167,7 +167,7 @@ module Farmers
         min_price: params[:min_price],
         max_price: params[:max_price],
         county: params[:county]&.strip,
-        sort: params[:sort] || "newest"
+        sort: params[:sort] || "newest",
       }
     end
 
@@ -179,8 +179,9 @@ module Farmers
 
     # Invalidate product caches when products are modified
     def invalidate_product_caches
-      Rails.cache.delete_matched("products/index/*")
       Rails.cache.delete("products/filter_options")
+    rescue StandardError
+      # ignore cache errors in production
     end
 
     def product_json(product)
